@@ -1,10 +1,10 @@
 from teams_alert import send_alert
-from zip_files import extract_and_delete, download_folder_path
-from upload_to_blob import upload_to_blob
+from zip_files import extract_and_delete
+from bulk_upload import bulk_upload
 import re
 import time
-import os
 import traceback
+import selenium.common
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.keys import Keys
@@ -12,7 +12,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.alert import Alert
-import selenium.common
 
 
 # this function attempts to clear any popups that happen upon page load
@@ -34,6 +33,7 @@ def clear_popup():
 
     return
 
+send_alert("Process has Started", "Commencing launch of Chrome Browser")
 
 # create web driver, set chrome options, implicit wait time and timeout values.
 serv = Service(r"C:\filepath\chromedriver.exe")
@@ -63,7 +63,7 @@ dropdown = driver.find_element(By.NAME, "drpProgram")
 dropdown_list_items = dropdown.text.splitlines()
 dropdown_list_items.pop(0)
 
-send_alert("Process has Started", "No issues logging into site and getting list items")
+send_alert("Website login successful", "No issues logging into site and getting list items")
 
 i = 0
 current_program = ""
@@ -100,13 +100,6 @@ for program in dropdown_list_items:
         # unzips the downloaded content, renames csv file and deletes the zip file
         extract_and_delete(new_file_name)
 
-        # upload to blob storage
-        upload_to_blob(new_file_name)
-        print(f"{new_file_name} uploaded to blob storage")
-
-        # delete file from download folder
-        os.remove(rf"{download_folder_path}\{new_file_name}.csv")
-
         i += 1
 
     except selenium.common.NoSuchElementException as no_element:
@@ -132,10 +125,15 @@ for program in dropdown_list_items:
                    f"{tb}")
         break
 
-# outside of for loop - sends message to teams and quits chrome driver
-send_alert("Process has completed.", "Please review any errors.")
+# 
+# outside of for loop - quits chrome driver, uploads files to blob storage and sends messages to teams
 driver.quit()
 
+send_alert("Upload Process has begun", "Attempting to upload all files to blob storage")
+
+bulk_upload()
+
+send_alert("Process has completed.", "Please review any errors.")
 
 
 
