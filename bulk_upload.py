@@ -14,3 +14,19 @@ def upload_to_blob(filename):
         blob_client.upload_blob(data, overwrite=True)
 
     return
+
+
+# this function loops through the file directory and calls the upload to blob function for each file and then removes the file from the local directory
+def bulk_upload():
+    download_folder_path = r"<folderpath>"
+    files = os.listdir(download_folder_path)
+
+    for file in files:
+        if file == "desktop.ini":
+            files.remove(file)
+
+        upload_to_blob(file)
+        os.remove(rf"{download_folder_path}\{file}")
+
+    return
+
