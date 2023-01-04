@@ -17,7 +17,7 @@ from selenium.webdriver.common.alert import Alert
 # this function attempts to clear any popups that happen upon page load
 def clear_popup():
     try:
-        driver.find_element(By.XPATH, '<//path"]>').click()
+        driver.find_element(By.ID, "btnMessagePopupDontShow").click()
     except:
         pass
     try:
@@ -39,6 +39,7 @@ send_alert("Process has Started", "Commencing launch of Chrome Browser")
 serv = Service(r"C:\filepath\chromedriver.exe")
 chrome_options = Options()
 chrome_options.add_argument("--incognito")
+chrome_options.binary_location = r"C:\Chrome Portable\GoogleChromePortable\App\Chrome-bin\chrome.exe"
 
 driver = webdriver.Chrome(service=serv, options=chrome_options)
 driver.implicitly_wait(60)
@@ -121,9 +122,13 @@ for program in dropdown_list_items:
     except:
         tb = traceback.format_exc()
         send_alert(f"An unexpected error has occurred when processing program {current_program}. "
-                   f"Terminating process.",
+                   f"Moving to next program",
                    f"{tb}")
-        break
+        link = driver.find_element(By.LINK_TEXT, "<LINK TEXT>")
+        link.click()
+        time.sleep(3)
+        i += 1
+        continue
 
 # 
 # outside of for loop - quits chrome driver, uploads files to blob storage and sends messages to teams
