@@ -1,7 +1,7 @@
 from azure.storage.blob import BlobClient
 
 
-# this function creates a blob storage client and uploads a file to the ahri files container
+# this function creates a blob storage client and uploads a file to the azure files container
 def upload_to_blob(filename):
     storage_account_key = "<accountKey>"
     storage_account_name = "<accountName>"
@@ -15,18 +15,4 @@ def upload_to_blob(filename):
 
     return
 
-
-# this function loops through the file directory and calls the upload to blob function for each file and then removes the file from the local directory
-def bulk_upload():
-    download_folder_path = r"<folderpath>"
-    files = os.listdir(download_folder_path)
-
-    for file in files:
-        if file == "desktop.ini":
-            files.remove(file)
-
-        upload_to_blob(file)
-        os.remove(rf"{download_folder_path}\{file}")
-
-    return
 
