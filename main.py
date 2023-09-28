@@ -109,34 +109,43 @@ for program in dropdown_list_items:
 
         time.sleep(10)
 
+        if current_program == "first program":
+            time.sleep(120)
+        if current_program == "second program":
+            time.sleep(120)
+
         link = driver.find_element(By.XPATH, '//*[@xpath]')
         link.click()
 
         time.sleep(5)
 
-        # Additional wait time required for these programs because of poor site and VM performance
-
-        if current_program == "first program":
-            time.sleep(30)
-        if current_program == "second program":
-            time.sleep(30)
-
         # removes special character from dropdown list value
         new_file_name = re.sub(r":", "", dropdown_list_items[i])
 
+        # removes the extra space which occurs from removing the special character
+        new_file_name_remove_space = re.sub(' +', ' ', new_file_name)
+
         # unzips the downloaded content, renames csv file and deletes the zip file
-        extract_and_delete(new_file_name)
+        extract_and_delete(new_file_name_remove_space)
 
         if current_program == "first program":
-            time.sleep(60)
+            time.sleep(120)
         if current_program == "second program":
-            time.sleep(60)
+            time.sleep(120)
 
         # upload to blob storage
-        upload_to_blob(new_file_name)
+        upload_to_blob(new_file_name_remove_space)
+
+                # Additional wait time required for these programs because of poor site and VM performance
+
+        if current_program == "first program":
+            time.sleep(30)
+        if current_program == "second program":
+            time.sleep(30)
+
 
         # delete file from download folder
-        os.remove(rf"C:\filepath\{new_file_name}.csv")
+        os.remove(rf"C:\Users\AAG7264\Downloads\{new_file_name_remove_space}.csv")
 
         i += 1
 
