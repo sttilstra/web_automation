@@ -64,8 +64,9 @@ clear_popup()
 search = driver.find_element(By.ID, "USERNAME FIELD")
 search.send_keys("username")
 
+Site = os.getenv('SITE')
 search = driver.find_element(By.ID, "PASSWORD FIELD")
-search.send_keys("password")
+search.send_keys(Site)
 
 search.send_keys(Keys.RETURN)
 time.sleep(5)
